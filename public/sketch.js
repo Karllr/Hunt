@@ -31,7 +31,7 @@ function windowResized() {
 }
 function setup() {
     createCanvas(windowWidth,windowHeight);
-    socket=io.connect("http://localhost:3000");
+    socket=io.connect("http://216.24.57.253");
     runner = new Runner(200, 200);
     var data={
         x: runner.x,
