@@ -104,7 +104,7 @@ addStone();
 addOres();
 checkOverlap();
 var app=express();
-var server=app.listen('216.24.57.253');
+var server=app.listen('0.0.0.0');
 app.use(express.static('public'))
 console.log("This server happens to be running");
 
