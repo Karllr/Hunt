@@ -1,5 +1,5 @@
 var express=require('express');
-var players=[];
+var players=[]; 
 var entities=[];
 function Player(id,x,y){
     this.id=id;
