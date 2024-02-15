@@ -107,7 +107,7 @@ var app=express();
 var server=app.listen(process.env.PORT,'0.0.0.0');
 app.use(express.static('public'))
 console.log("This server happens to be running");
-
+console.log(blocks);
 var socket=require('socket.io')
 
 var io=socket(server);
