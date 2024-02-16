@@ -1,11 +1,12 @@
 var express=require('express');
-var players=[]; 
+var players=[];
 var entities=[];
-function Player(id,x,y){
+function Player(id,x,y,name){
     this.id=id;
     this.x=x;
     this.y=y;
     this.h=20;
+    this.name=name;
 }
 function Item(x,y,type){
     this.x=x;
@@ -104,10 +105,10 @@ addStone();
 addOres();
 checkOverlap();
 var app=express();
-var server=app.listen(process.env.PORT,'0.0.0.0');
+var server=app.listen(3000);
 app.use(express.static('public'))
 console.log("This server happens to be running");
-console.log(blocks);
+
 var socket=require('socket.io')
 
 var io=socket(server);
@@ -127,7 +128,7 @@ io.sockets.on(
         socket.on(
             'start',
             function(data){
-                var player=new Player(socket.id,data.x,data.y);
+                var player=new Player(socket.id,data.x,data.y,data.name);
                 players.push(player)
             }
         )
@@ -209,4 +210,3 @@ io.sockets.on(
         // )
     }
 )
- 
