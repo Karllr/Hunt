@@ -52,7 +52,7 @@ function Runner(x,y){
         if(deathTimer<120){
             deathTimer++;
             if(deathTimer<2){   
-                socket.emit('death',socket.id)
+                socket.emit('death',name)
             }
             this.dead=true;
         }else{
