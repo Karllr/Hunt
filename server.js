@@ -105,7 +105,7 @@ addStone();
 addOres();
 checkOverlap();
 var app=express();
-var server=app.listen(3000);
+var server=app.listen(process.env.PORT,'0.0.0.0');
 app.use(express.static('public'))
 console.log("This server happens to be running");
 
