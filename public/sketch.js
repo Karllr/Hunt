@@ -32,7 +32,7 @@ function windowResized() {
 }
 function setup() {
     createCanvas(windowWidth,windowHeight);
-    socket=io.connect("http://localhost:3000");
+    socket=io.connect("https://hunt-server-ig.onrender.com");
     runner = new Runner(200, 200);
     name=prompt("Name ur player")
     runner.name=name;
