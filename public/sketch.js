@@ -13,6 +13,7 @@ var cam = {
     x: 0,
     y: 0
 }
+var name;
 var selectedSlot = {
     x: undefined,
     y: undefined,
@@ -31,12 +32,15 @@ function windowResized() {
 }
 function setup() {
     createCanvas(windowWidth,windowHeight);
-    socket=io.connect("https://hunt-server-ig.onrender.com");
+    socket=io.connect("http://localhost:3000");
     runner = new Runner(200, 200);
+    name=prompt("Name ur player")
+    runner.name=name;
     var data={
         x: runner.x,
         y:runner.y,
         h:runner.h,
+        name:runner.name
     };
     socket.emit('start',data);
     //makeBase();
@@ -99,8 +103,11 @@ function draw() {
     runner.show();
     Erase(blocksInRender);
     for(var i=0;i<entities.length;i++){
-        entities[i].update(blocks);
+        entities[i].update(blocks,runner);
         entities[i].show();
+        if(entities[i].collidedWithPlayer){
+            entities.splice(i,1);
+        }
     }
     for (var i = 0; i < blocks.length; i++) {
         if (dist(runner.x, runner.y, blocks[i].x, blocks[i].y) < 8 * 50) {
@@ -202,7 +209,7 @@ function draw() {
                 noStroke();
                 textSize(20);
                 textAlign(CENTER);
-                text(players[i].id, players[i].x, players[i].y - 30);
+                text(players[i].name, players[i].x, players[i].y - 30);
             }
         }
         // blobs[i].show();
@@ -268,6 +275,7 @@ function draw() {
     )
     //console.log(frameRate())
 }
+
 document.addEventListener(
     'contextmenu', 
     function(event) {
