@@ -210,6 +210,7 @@ function Item(x,y,type){
     this.gravity=0.5;
     this.xvel=0;
     this.friction=0.7;
+    this.collidedWithPlayer=false;
     this.show=function(){
         noStroke();
         switch(this.type){
@@ -366,13 +367,14 @@ function Item(x,y,type){
             break;
         }
     }
-    this.update=function(blocks){
+    this.update=function(blocks,runner){
         this.x+=this.xvel;
         this.xvel*=this.friction;
         this.yvel+=this.gravity;
         this.collideWith(this.xvel,0,blocks);
         this.y+=this.yvel;
         this.collideWith(0,this.yvel,blocks);
+        this.collideWithPlayer(runner)
     }
     this.collideWith=function(xv,yv,blocks){
         for(var i=0;i<blocks.length;i++){
@@ -407,5 +409,13 @@ function Item(x,y,type){
                     // }
             }
         }
+    }
+    this.collideWithPlayer=function(player){
+        if(this.y+this.Sz > player.y &&
+            this.y        < player.y+player.h &&
+            this.x+this.Sz > player.x &&
+            this.x        < player.x+player.w){
+                this.collidedWithPlayer=true;
+            }
     }
 }
