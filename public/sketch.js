@@ -32,9 +32,14 @@ function windowResized() {
 }
 function setup() {
     createCanvas(windowWidth,windowHeight);
-    socket=io.connect("https://hunt-server-ig.onrender.com");
+    socket=io.connect("http://hunt-server-ig.onrender.com");
     runner = new Runner(200, 200);
-    name=prompt("Name ur player")
+    if(localStorage.getItem("name")!==null){
+        name=localStorage.getItem("name");
+    }else{
+        name=prompt("Name ur player");
+        localStorage.setItem("name",name);
+    }
     runner.name=name;
     var data={
         x: runner.x,
