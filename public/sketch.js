@@ -1,7 +1,7 @@
 var keys = [];
 var blocks = [];
 var blockData=[];
-var entities=[];
+var items=[];
 var players=[];
 var blocksInRender=[];
 var runner;
@@ -32,7 +32,7 @@ function windowResized() {
 }
 function setup() {
     createCanvas(windowWidth,windowHeight);
-    socket=io.connect("https://hunt-server-ig.onrender.com");
+    socket=io.connect("http://localhost:3000");
     runner = new Runner(200, 200);
     if(localStorage.getItem("name")!==null){
         name=localStorage.getItem("name");
@@ -73,9 +73,9 @@ function setup() {
     socket.on(
         'items',
         function (data){
-            Erase(entities)
+            Erase(items)
             for(var i=0;i<data.length;i++){
-                entities.push(
+                items.push(
                     new Item(
                         data[i].x,
                         data[i].y,
@@ -107,11 +107,12 @@ function draw() {
     cam.y = lerp(cam.y, height / 2 - runner.y, 0.5);
     runner.show();
     Erase(blocksInRender);
-    for(var i=0;i<entities.length;i++){
-        entities[i].update(blocks,runner);
-        entities[i].show();
-        if(entities[i].collidedWithPlayer){
-            entities.splice(i,1);
+    for(var i=0;i<items.length;i++){
+        items[i].update(blocks,runner);
+        items[i].show();
+        if(items[i].collidedWithPlayer){
+            items.splice(i,1);
+            socket.emit("itemPicked",i)
         }
     }
     for (var i = 0; i < blocks.length; i++) {
@@ -154,14 +155,14 @@ function draw() {
                     //console.log(blocks[i].break.timeDone/blocks[i].break.timeToDo);
                 }
                 if(blocks[i].break.timeDone>blocks[i].break.timeToDo*HoldFactor){
-                    entities.push(
+                    items.push(
                         new Item(
                             blocks[i].x,
                             blocks[i].y,
                             blocks[i].type
                         )
                     )
-                    entities[entities.length-1].yvel=-4;
+                    items[items.length-1].yvel=-4;
                     
                     socket.emit(
                         'blockRemoved',
@@ -269,13 +270,20 @@ function draw() {
     socket.on(
         'newItem',
         function(data){
-            entities.push(
+            items.push(
                 new Item(
                     data.x,
                     data.y,
                     data.type
                 )
             )
+        }
+    )
+    socket.on(
+        'itemLacked',
+        function(data){
+            console.log(data);
+            items.splice(data,1);
         }
     )
     //console.log(frameRate())
