@@ -1,6 +1,6 @@
-var express=require('express');  
+var express=require('express');
 var players=[];
-var entities=[];
+var items=[];
 function Player(id,x,y,name){
     this.id=id;
     this.x=x;
@@ -105,7 +105,7 @@ addStone();
 addOres();
 checkOverlap();
 var app=express();
-var server=app.listen(process.env.PORT,'0.0.0.0');
+var server=app.listen(3000);
 app.use(express.static('public'))
 console.log("This server happens to be running");
 
@@ -122,7 +122,7 @@ io.sockets.on(
     'connection',
     function(socket){
         socket.emit('blocks', blocks);
-        socket.emit('items',entities);
+        socket.emit('items',items);
         // console.log("it appears that "+socket.id+" has joined us");
         console.log("A new client has appeard:"+socket.id);
         socket.on(
@@ -178,7 +178,7 @@ io.sockets.on(
                     data.y,
                     data.type
                 )
-                entities.push(item);
+                items.push(item);
                 socket.broadcast.emit('newItem', item)
             }
         )
@@ -196,9 +196,17 @@ io.sockets.on(
         );
 
         socket.on(
+            "itemPicked",
+            function(data){
+                items.splice(data,1);
+                socket.broadcast.emit('itemLacked',data);
+            }
+        )
+
+        socket.on(
             'death',
             function(data){
-                console.log(data+"died")
+                console.log(data+" died")
             }
         )
         // socket.on(
