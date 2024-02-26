@@ -184,6 +184,13 @@ io.sockets.on(
         )
 
         socket.on(
+            'ATTACK',
+            function(data){
+                console.log("Oh dear. There has been an attack at: "+ data.x+", "+data.y)
+                socket.broadcast.emit('ATTACK',data);
+            }
+        )
+        socket.on(
             'disconnect',
             function() {
                 console.log('Unfortunately,'+socket.id+'has left the game');
