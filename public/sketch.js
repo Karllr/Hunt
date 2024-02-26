@@ -7,12 +7,14 @@ var blocksInRender=[];
 var runner;
 var socket;
 var HoldFactor=1;
+var lackOfBlock=true;
 var timeToPlace=0;
 var deathTimer = 0;
 var cam = {
     x: 0,
     y: 0
-}
+};
+var isAttacked=false;
 var name;
 var selectedSlot = {
     x: undefined,
@@ -152,7 +154,10 @@ function draw() {
                         blocks[i].break.timeDone/(blocks[i].break.timeToDo*HoldFactor)*50,
                         blocks[i].break.timeDone/(blocks[i].break.timeToDo*HoldFactor)*50
                     )
+                    lackOfBlock=false;
                     //console.log(blocks[i].break.timeDone/blocks[i].break.timeToDo);
+                }else{
+                    lackOfBlock=true;
                 }
                 if(blocks[i].break.timeDone>blocks[i].break.timeToDo*HoldFactor){
                     items.push(
@@ -286,6 +291,28 @@ function draw() {
             items.splice(data,1);
         }
     )
+
+    socket.on(
+        'ATTACK',
+        function(data){
+            //console.log(data.x,data.y);
+            if(!isAttacked){
+                if(
+                    runner.x+runner.w>data.x&&
+                    runner.x<data.x+50&&
+                    runner.y+runner.h>data.y&&
+                    runner.y<data.y+50
+                ){
+                    console.log("We have taken some damage");
+                    runner.health-=10;
+                    runner.yvel=-10;
+                }
+                isAttacked=true;
+            }
+        }
+    )
+    isAttacked=false;
+    console.log(runner.health)
     //console.log(frameRate())
 }
 
@@ -295,3 +322,15 @@ document.addEventListener(
         event.preventDefault();
     }
 );
+
+function mouseClicked(){
+    if(mouseButton===LEFT&&lackOfBlock){
+        socket.emit(
+            'ATTACK',
+            {
+                x:selectedSlot.x*50,
+                y:selectedSlot.y*50
+            }
+        )
+    }
+}
