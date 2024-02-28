@@ -44,13 +44,13 @@ function setup() {
         name:runner.name
     };
     socket.emit('start',data);
-    makeBase();
+    //makeBase();
     for (var i = 0; i < blocks.length; i++) {
         blocks[i].update(blocks);
     }
-    addStone();
-    addOres();
-    checkOverlap();
+    //addStone();
+    //addOres();
+    //checkOverlap();
     socket.on(
         'blocks',
         function(data){
