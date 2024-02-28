@@ -44,26 +44,27 @@ function setup() {
         name:runner.name
     };
     socket.emit('start',data);
-    //makeBase();
+    makeBase();
     for (var i = 0; i < blocks.length; i++) {
         blocks[i].update(blocks);
     }
-    //addStone();
-    //addOres();
-    //checkOverlap();
+    addStone();
+    addOres();
+    checkOverlap();
     socket.on(
         'blocks',
         function(data){
             //blocks=data;
-            for(var i=0;i<data.length;i++){
+            for(var i=0;i<data.blocks.length;i++){
                 blocks.push(
                     new Block(
-                        data[i].x,
-                        data[i].y,
-                        data[i].type
+                        data.blocks[i].x,
+                        data.blocks[i].y,
+                        data.blocks[i].type
                     )
                 )
             }
+            lowestPoint=data.lp;
         }
     )
     socket.on(
@@ -85,12 +86,6 @@ function setup() {
         //console.log(data);
         players = data;
     });
-    lowestPoint=0;
-    for(var i=0;i<blocks.length;i++){
-        if(blocks[i].y>lowestPoint){
-            lowestPoint=blocks[i].y+50;
-        }
-    }
 }
 
 function draw() {
