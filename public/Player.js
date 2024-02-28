@@ -23,8 +23,9 @@ function Runner(x,y){
             }
             this.h = (keys[DOWN_ARROW]||keys[83]) ? 10 : 20;
             this.speed = (keys[DOWN_ARROW]||keys[83]) ? 1.5 : 5;
-            if(keys[16]||keys[81]){
+            if((keys[16]||keys[81])&&hunger>30){
                 this.speed=7.5;
+                hunger-=0.125;
             }
             if (keys[LEFT_ARROW]||keys[65]) {
                 this.accel = -this.speed;
@@ -57,6 +58,7 @@ function Runner(x,y){
             this.dead=true;
         }else{
             this.health=100;
+            hunger=100;
             deathTimer=0;
             this.dead=false;
             this.x=this.respawn.x;
