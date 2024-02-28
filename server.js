@@ -104,6 +104,12 @@ makeBase();
 addStone();
 addOres();
 checkOverlap();
+var lowestPoint=0;
+for(var i=0;i<blocks.length;i++){
+    if(blocks[i].y>lowestPoint){
+        lowestPoint=blocks[i].y+50;
+    }
+}
 var app=express();
 var server=app.listen(process.env.PORT,'0.0.0.0');
 app.use(express.static('public'))
@@ -121,7 +127,12 @@ function heartbeat(){
 io.sockets.on(
     'connection',
     function(socket){
-        socket.emit('blocks', blocks);
+        socket.emit('blocks',
+            {
+                blocks:blocks,
+                lp:lowestPoint
+            }
+        );
         socket.emit('items',items);
         // console.log("it appears that "+socket.id+" has joined us");
         console.log("A new client has appeard:"+socket.id);
