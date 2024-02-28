@@ -1,28 +1,22 @@
-var keys = [];
-var blocks = [];
-var blockData=[];
-var items=[];
-var players=[];
-var blocksInRender=[];
-var runner;
-var socket;
-var HoldFactor=1;
-var lackOfBlock=true;
-var timeToPlace=0;
-var deathTimer = 0;
+var keys = [], blocks = [], blockData=[], items=[], players=[], blocksInRender=[];
+var runner, socket, name, lowestPoint;
+var HoldFactor=1,
+timeToPlace=0,
+deathTimer = 0,
+antiHealth=0,
+hunger=100;
+var lackOfBlock=true,
+isAttacked=false;
+var inventory=[];
 var cam = {
     x: 0,
     y: 0
-};
-var isAttacked=false;
-var name;
-var selectedSlot = {
+}, selectedSlot = {
     x: undefined,
     y: undefined,
-}
-var settings = {
+}, settings = {
     renderDistance: 12,
-}
+};
 function keyPressed() {
     keys[keyCode] = true;
 }
@@ -34,7 +28,7 @@ function windowResized() {
 }
 function setup() {
     createCanvas(windowWidth,windowHeight);
-    socket=io.connect("https://hunt-server-ig.onrender.com");
+    socket=io.connect("http://localhost:3000");
     runner = new Runner(200, 200);
     if(localStorage.getItem("name")!==null){
         name=localStorage.getItem("name");
@@ -50,13 +44,13 @@ function setup() {
         name:runner.name
     };
     socket.emit('start',data);
-    //makeBase();
+    makeBase();
     for (var i = 0; i < blocks.length; i++) {
         blocks[i].update(blocks);
     }
-    //addStone();
-    //addOres();
-    //checkOverlap();
+    addStone();
+    addOres();
+    checkOverlap();
     socket.on(
         'blocks',
         function(data){
@@ -91,6 +85,12 @@ function setup() {
         //console.log(data);
         players = data;
     });
+    lowestPoint=0;
+    for(var i=0;i<blocks.length;i++){
+        if(blocks[i].y>lowestPoint){
+            lowestPoint=blocks[i].y+50;
+        }
+    }
 }
 
 function draw() {
@@ -194,7 +194,7 @@ function draw() {
         }
         if (mouseButton == RIGHT) {
             if(timeToPlace<1){
-                timeToPlace=15;
+                timeToPlace=7;
                 blocks.push(new Block(selectedSlot.x * 50, selectedSlot.y * 50, "grass"))
                 checkOverlap();
                 let blockD={
@@ -229,21 +229,6 @@ function draw() {
         // }
     }
     pop();
-    socket.on(
-        'blocks',
-        function(data){
-            Erase(blocks)
-            for(var i=0;i<data.length;i++){
-                blocks.push(
-                    new Block(
-                        data[i].x,
-                        data[i].y,
-                        data[i].type
-                    )
-                )
-            }
-        }
-    )
     socket.on(
         'lackOfBlock',
         function(data){
@@ -312,7 +297,27 @@ function draw() {
         }
     )
     isAttacked=false;
-    console.log(runner.health)
+    //console.log(runner.health)
+    antiHealth=lerp(antiHealth,runner.health,0.05);
+    antiHealth=constrain(antiHealth,0,100);
+    hunger-=0.01;
+    if(hunger>60){
+        runner.health+=0.05;
+    }
+    noStroke();
+    //Health
+    fill(150,0,0);
+    rect(20,20,200,20);
+    fill(255,0,0);
+    rect(20,20,antiHealth*2, 20);
+    //Hunger
+    fill(0,150,0);
+    rect(20,50,200,20);
+    fill(0,255,0);
+    rect(20,50,hunger*2, 20);
+    if(runner.y>lowestPoint){
+        runner.health-=5;
+    }
     //console.log(frameRate())
 }
 
