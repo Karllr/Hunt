@@ -4,10 +4,13 @@ var HoldFactor=1,
 timeToPlace=0,
 deathTimer = 0,
 antiHealth=0,
-hunger=100;
+hunger=100,
+damageRot=0;
 var lackOfBlock=true,
 isAttacked=false;
-var inventory=[];
+var inventory=[
+    ["grass",64]
+];
 var cam = {
     x: 0,
     y: 0
@@ -28,7 +31,7 @@ function windowResized() {
 }
 function setup() {
     createCanvas(windowWidth,windowHeight);
-    socket=io.connect("https://hunt-server-ig.onrender.com");
+    socket=io.connect("https:hunt-server-ig.onrender.com");
     runner = new Runner(200, 200);
     if(localStorage.getItem("name")!==null){
         name=localStorage.getItem("name");
@@ -99,7 +102,7 @@ function draw() {
     socket.emit('update', data);
     push();
     translate(cam.x, cam.y);
-    rotate(deathTimer / 1000);
+    rotate((deathTimer / 1000)+ damageRot);
     cam.x = lerp(cam.x, width / 2 - runner.x, 0.5);
     cam.y = lerp(cam.y, height / 2 - runner.y, 0.5);
     runner.show();
@@ -296,8 +299,11 @@ function draw() {
     antiHealth=lerp(antiHealth,runner.health,0.05);
     antiHealth=constrain(antiHealth,0,100);
     hunger-=0.01;
-    if(hunger>60){
+    if(hunger>60&&!runner.dead){
         runner.health+=0.05;
+    }
+    if(hunger<1){
+        runner.health-=0.05;
     }
     noStroke();
     //Health
@@ -313,7 +319,8 @@ function draw() {
     if(runner.y>lowestPoint){
         runner.health-=5;
     }
-    //console.log(frameRate())
+    damageRot=lerp(damageRot,0,0.1)
+    console.log(runner.yvel);
 }
 
 document.addEventListener(
