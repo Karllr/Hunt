@@ -47,6 +47,7 @@ function Runner(x,y){
         this.falling=true;
         this.y+=this.yvel+=this.gravity;
         this.collideWith(0,this.yvel,blocks);
+        this.health=constrain(this.health,-1,100);
         //console.log(this.health);
     };
     this.respawnn=function(){
@@ -56,6 +57,7 @@ function Runner(x,y){
                 socket.emit('death',name)
             }
             this.dead=true;
+            this.health=-1;
         }else{
             this.health=100;
             hunger=100;
@@ -79,7 +81,10 @@ function Runner(x,y){
                             this.yvel = 0;
                             this.falling = false;
                             this.y = b.y - this.h;
-                            if(yv>10) this.health-=2.5*(yv-10);
+                            if(yv>16){
+                                this.health-=2.5*(yv-16);
+                                damageRot=PI/40;
+                            }
                         }
                         // TOP
                         if (yv < 0) {
