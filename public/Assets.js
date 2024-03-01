@@ -419,3 +419,160 @@ function Item(x,y,type){
             }
     }
 }
+
+function PhantomItem(x,y,type,Sz){
+    noStroke();
+        switch(type){
+            case "grass":
+                fill('#64A43A');
+                    rect(x,y,Sz,Sz/8*3)
+                fill('#7AB54E');
+                    rect(x+Sz/8,y+Sz/8,Sz/8*6,Sz/8)
+                    rect(x+Sz/4,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/2,y+Sz/4,Sz/4,Sz/8);
+                fill('#805B3E');
+                    rect(x, y+Sz/8*3, Sz,Sz/8*5);
+                fill('#8C6344');
+                    rect(x+Sz/8,y+Sz/2,Sz/4*3,Sz/8*3)
+                fill('#805B3E');
+                    rect(x+Sz/4, y+Sz/2,Sz/8, Sz/8)
+                    rect(x+Sz/2, y+Sz/2,Sz/4, Sz/8)
+                fill('#64A43A');
+                    rect(x+Sz/4, y+Sz/8*3,Sz/8, Sz/8)
+                    rect(x+Sz/2, y+Sz/8*3,Sz/4, Sz/8)
+                fill('#846C5A');
+                    rect(x+Sz/8*5,y+Sz/8*5,Sz/8,Sz/8);
+                    rect(x+Sz/4,y+Sz/4*3,Sz/8,Sz/8);
+            break;
+            case "dirt":
+                fill("#805B3E");
+                    rect(x,y,Sz,Sz);
+                fill('#8C6344');
+                    rect(x+Sz/8,y+Sz/8,Sz/4*3,Sz/4*3);
+                fill('#805B3E');
+                    rect(x+Sz/8*3,y+Sz/8*2,Sz/8,Sz/8)
+                    rect(x+Sz/8*2,y+Sz/8*3,Sz/8,Sz/8)
+                    rect(x+Sz/8*5,y+Sz/8*2,Sz/8,Sz/8)
+                    rect(x+Sz/8*5,y+Sz/8*4,Sz/8,Sz/8)
+                    rect(x+Sz/8*4,y+Sz/8*5,Sz/8,Sz/8)
+                    rect(x+Sz/8*2,y+Sz/8*5,Sz/8,Sz/8)
+                fill('#85674F');
+                    rect(x+Sz/8*2,y+Sz/8*2,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8*5,Sz/8,Sz/8);
+            break;
+            case "stone":
+                fill("#717171");
+                    rect(x,y,Sz,Sz);
+                fill("#808080");
+                    rect(x+Sz/8,y+Sz/8,Sz/4*3,Sz/4*3);
+                fill("#717171");
+                    rect(x+Sz/4,y+Sz/4,Sz/4,Sz/8)
+                    rect(x+Sz/2,y+Sz/8*5,Sz/4,Sz/8);
+            break;
+            case "iron_ore":
+                fill("#717171");
+                    rect(x,y,Sz,Sz);
+                fill("#808080");
+                    rect(x+Sz/8,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*3,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/2,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/2,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/8*3,Sz/8,Sz/8);
+                    rect(x+Sz/8*3,y+Sz/8*3,Sz/4,Sz/4);
+                fill("#D8AF93");
+                    rect(x+Sz/4,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/4,y+Sz/8*5,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8*5,Sz/8,Sz/8);
+                fill("#AF8E77");
+                    rect(x+Sz/4,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/8*5,Sz/8,Sz/8);
+                    rect(x+Sz/4,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/8*5,Sz/8,Sz/8);
+            break;
+            case "gold_ore":
+                fill("#717171");
+                    rect(x,y,Sz,Sz);
+                fill("#808080");
+                    rect(x+Sz/8,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*3,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/2,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/2,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/8*3,Sz/8,Sz/8);
+                    rect(x+Sz/8*3,y+Sz/8*3,Sz/4,Sz/4);
+                fill("#FFFFB5");
+                    rect(x+Sz/4,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/4,y+Sz/8*5,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8*5,Sz/8,Sz/8);
+                fill("#F8AF2B");
+                    rect(x+Sz/4,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/4,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8*6,Sz/8,Sz/8);
+                fill("#FCEE4B");
+                    rect(x+Sz/8,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/8*5,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/8*5,Sz/8,Sz/8);
+            break;
+            case "diamond_ore":
+                fill("#717171");
+                    rect(x,y,Sz,Sz);
+                fill("#808080");
+                    rect(x+Sz/8,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*3,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/2,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/2,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/8*3,Sz/8,Sz/8);
+                    rect(x+Sz/8*3,y+Sz/8*3,Sz/4,Sz/4);
+                fill("#C7E7FE");
+                    rect(x+Sz/4,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/4,y+Sz/8*5,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8*5,Sz/8,Sz/8);
+                fill("#77CEFB");
+                    rect(x+Sz/4,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8,Sz/8,Sz/8);
+                    rect(x+Sz/4,y+Sz/8*6,Sz/8,Sz/8);
+                    rect(x+Sz/8*5,y+Sz/8*6,Sz/8,Sz/8);
+                fill("#5DECF5");
+                    rect(x+Sz/8,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/4,Sz/8,Sz/8);
+                    rect(x+Sz/8,y+Sz/8*5,Sz/8,Sz/8);
+                    rect(x+Sz/8*6,y+Sz/8*5,Sz/8,Sz/8);
+            break;
+            case "wood":
+                fill("#534228");
+                    rect(x,y,Sz,Sz);
+                fill("#695433");
+                    rect(x+Sz/8,y,Sz/4*3,Sz);
+                fill("#534228");
+                    rect(x+Sz/4,y+Sz/8,Sz/8,Sz/4)
+                    rect(x+Sz/4,y+Sz/8*5,Sz/8,Sz/4)
+                    rect(x+Sz/8*5,y,Sz/8,Sz/4)
+                    rect(x+Sz/8*5,y+Sz/8*3,Sz/8,Sz/4)
+                    rect(x+Sz/8*5,y+Sz/8*6,Sz/8,Sz/4)
+            break;
+            case "leaf":
+                fill("#317F10");
+                rect(x,y,Sz,Sz/8);
+                rect(x,y,Sz/8,Sz);
+                rect(x+Sz/8*7,y,Sz/8,Sz);
+                rect(x,y+Sz/8*7,Sz,Sz/8);
+            break;
+        }
+}
