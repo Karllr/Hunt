@@ -244,7 +244,7 @@ function draw() {
                     if(inventory[itemInUse.slot][1]===0){
                         inventory[itemInUse.slot].length=0;
                     }
-                    checkOverlap();
+                    //checkOverlap();
                     let blockD={
                         x:blocks[blocks.length-1].x,
                         y:blocks[blocks.length-1].y,
