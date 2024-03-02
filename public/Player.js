@@ -83,7 +83,7 @@ function Runner(x,y){
                             this.y = b.y - this.h;
                             if(yv>16){
                                 this.health-=2.5*(yv-16);
-                                damageRot=PI/40;
+                                damageRot=PI/90;
                             }
                         }
                         // TOP
