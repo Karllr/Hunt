@@ -34,9 +34,14 @@ var cam = {
     y: undefined,
 }, settings = {
     renderDistance: 12,
+}, itemInUse={
+    slot:0,
+    type:undefined,
+    count:undefined,
 };
 function keyPressed() {
     keys[keyCode] = true;
+
 }
 function keyReleased() {
     keys[keyCode] = false;
@@ -54,6 +59,10 @@ function setup() {
         name=prompt("Name ur player");
         localStorage.setItem("name",name);
     }
+
+    if(localStorage.getItem("inventory")!==null){
+        inventory=JSON.parse(localStorage.getItem('inventory'));
+    }
     runner.name=name;
     var data={
         x: runner.x,
@@ -62,13 +71,13 @@ function setup() {
         name:runner.name
     };
     socket.emit('start',data);
-    //makeBase();
+    makeBase();
     for (var i = 0; i < blocks.length; i++) {
         blocks[i].update(blocks);
     }
-    //addStone();
-    //addOres();
-    //checkOverlap();
+    addStone();
+    addOres();
+    checkOverlap();
     socket.on(
         'blocks',
         function(data){
@@ -228,7 +237,13 @@ function draw() {
             if (mouseButton == RIGHT) {
                 if(timeToPlace<1){
                     timeToPlace=7;
-                    blocks.push(new Block(selectedSlot.x * 50, selectedSlot.y * 50, "grass"))
+                    if(inventory[itemInUse.slot][1]!==undefined){
+                        inventory[itemInUse.slot][1]--;
+                        blocks.push(new Block(selectedSlot.x * 50, selectedSlot.y * 50, itemInUse.type));
+                    }
+                    if(inventory[itemInUse.slot][1]===0){
+                        inventory[itemInUse.slot].length=0;
+                    }
                     checkOverlap();
                     let blockD={
                         x:blocks[blocks.length-1].x,
@@ -297,7 +312,11 @@ function draw() {
         //Inventory
         {
             for(var i=0;i<9;i++){
-                stroke(0);
+                if(i===itemInUse.slot){
+                    stroke(255);
+                }else{
+                    stroke(0);
+                }
                 fill(0,0,0,100)
                 strokeWeight(5);
                 rect(i*50+width/2-50*9/2,10,50,50);
@@ -306,7 +325,9 @@ function draw() {
                 noStroke();
                 textSize(20)
                 fill(255);
-                text(inventory[i][1],i*50+width/2-50*9/2+50,60)
+                if(inventory[i][1]!==NaN){
+                    text(inventory[i][1],i*50+width/2-50*9/2+50,60)
+                }
             }
         }
     }
@@ -379,7 +400,15 @@ function draw() {
             }
         )
     }
+    localStorage.setItem(
+        'inventory',
+        JSON.stringify(
+            inventory
+        )
+    )
     console.log(runner.yvel);
+    itemInUse.type=inventory[itemInUse.slot][0];
+    itemInUse.count=inventory[itemInUse.slot][1];
 }
 
 document.addEventListener(
@@ -388,7 +417,21 @@ document.addEventListener(
         event.preventDefault();
     }
 );
-
+function mouseWheel(e){
+    console.log(e.delta);
+    if(e.delta<0) {
+        itemInUse.slot--;
+        if(itemInUse.slot<0){
+            itemInUse.slot=8;
+        }
+    }
+    if(e.delta>0) {
+        itemInUse.slot++;
+        if(itemInUse.slot>8){
+            itemInUse.slot=0;
+        }
+    }
+}
 function mouseClicked(){
     if(mouseButton===LEFT&&lackOfBlock){
         socket.emit(
