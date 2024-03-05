@@ -1,4 +1,4 @@
-var express=require('express');  
+var express=require('express');
 var players=[];
 var items=[];
 function Player(id,x,y,name){
@@ -14,7 +14,11 @@ function Item(x,y,type){
     this.type=type;
 }
 var blocks=[];
-
+function Block(x,y,type){
+    this.x=x;
+    this.y=y;
+    this.type=type;
+}
 function Erase(set){
     set.length=0;
 }
@@ -25,11 +29,11 @@ function makeBase(seed){
         yVal+=Math.round(Math.random()*4-2)*50
         //console.log(yVal)
         blocks.push(
-            {
-                x:i*50,
-                y:yVal,
-                type:"grass"
-            }
+            new Block(
+                i*50,
+                yVal,
+                "grass"
+            )
         );
     }
     for(var i=0;i<blocks.length;i++){
@@ -38,11 +42,11 @@ function makeBase(seed){
             //console.log(amountOfDirtUnder);
             for(var j=0;j<amountOfDirtUnder;j++){
                 blocks.push(
-                    {
-                        x:blocks[i].x,
-                        y:blocks[i].y+(j+1)*50,
-                        type:"dirt"
-                    }
+                    new Block(
+                        blocks[i].x,
+                        blocks[i].y+(j+1)*50,
+                        "dirt"
+                    )
                 )
             }
         }
@@ -61,11 +65,11 @@ function addStone(){
             let amountOtStoneUnder=Math.round(Math.random()*10+40);
             for(var j=0;j<amountOtStoneUnder;j++){
                 blocks.push(
-                    {
-                        x:blocks[i].x,
-                        y:blocks[i].y+(j+1)*50,
-                        type:"stone"
-                    }
+                    new Block(
+                        blocks[i].x,
+                        blocks[i].y+(j+1)*50,
+                        "stone"
+                    )
                 );
             }
         }
@@ -114,6 +118,7 @@ var app=express();
 var server=app.listen(process.env.PORT,'0.0.0.0');
 app.use(express.static('public'))
 console.log("This server happens to be running");
+console.log(blocks)
 
 var socket=require('socket.io')
 
