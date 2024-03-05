@@ -7,7 +7,9 @@ antiHealth=0,
 hunger=100,
 damageRot=0;
 var lackOfBlock=true,
-isAttacked=false;
+isAttacked=false,
+itemReceived=false,
+blocksReceived=false;
 var inventory=[
     ["grass",1],
     [],
@@ -41,7 +43,9 @@ var cam = {
 };
 function keyPressed() {
     keys[keyCode] = true;
-
+    if(keyCode>=49&&keyCode<=57){
+        itemInUse.slot=keyCode-49;
+    }
 }
 function keyReleased() {
     keys[keyCode] = false;
@@ -202,11 +206,18 @@ function draw() {
                         lackOfBlock=true;
                     }
                     if(blocks[i].break.timeDone>blocks[i].break.timeToDo*HoldFactor){
+                        blocks[i].break.timeDone=0;
+                        let itemData={
+                            x:blocks[i].x,
+                            y:blocks[i].y,
+                            type:blocks[i].type,
+                        }
+                        blocks.splice(i,1);
                         items.push(
                             new Item(
-                                blocks[i].x,
-                                blocks[i].y,
-                                blocks[i].type
+                                itemData.x,
+                                itemData.y,
+                                itemData.type
                             )
                         )
                         items[items.length-1].yvel=-4;
@@ -215,18 +226,18 @@ function draw() {
                             'blockRemoved',
                             {
                                 index:i,
-                                x:blocks[i].x,
-                                y:blocks[i].y
+                                x:itemData.x,
+                                y:itemData.y
                             }
                         )
-                        socket.emit('itemAdded',
-                                {
-                                    x:blocks[i].x,
-                                    y:blocks[i].y,
-                                    type:blocks[i].type
-                                }
+                        socket.emit(
+                            'itemAdded',
+                            {
+                                x:itemData.x,
+                                y:itemData.y,
+                                type:itemData.type
+                            }
                         )
-                        blocks.splice(i,1);
                     }
                 }
             }else{
@@ -271,10 +282,6 @@ function draw() {
                     text(players[i].name, players[i].x, players[i].y - 30);
                 }
             }
-            // blobs[i].show();
-            // if (blob.eats(blobs[i])) {
-            //   blobs.splice(i, 1);
-            // }
         }
     }
     pop();
@@ -283,6 +290,8 @@ function draw() {
         //Health and hunger
         {
             isAttacked=false;
+            itemReceived=false;
+            blocksReceived=false;
             //console.log(runner.health)
             antiHealth=lerp(antiHealth,runner.health,0.05);
             antiHealth=constrain(antiHealth,0,100);
@@ -352,31 +361,38 @@ function draw() {
         socket.on(
             'newBlock',
             function(data){
-                blocks.push(
-                    new Block(
-                        data.x,
-                        data.y,
-                        data.type
+                if(!blocksReceived){
+                    blocks.push(
+                        new Block(
+                            data.x,
+                            data.y,
+                            data.type
+                        )
                     )
-                )
+                    blocksReceived=false;
+                }
             }
         )
         socket.on(
             'newItem',
             function(data){
-                items.push(
-                    new Item(
-                        data.x,
-                        data.y,
-                        data.type
+                if(!itemReceived){
+                    items.push(
+                        new Item(
+                            data.x,
+                            data.y,
+                            data.type
+                        )
                     )
-                )
+                    console.log("new stuff ig")
+                    itemReceived=true;
+                }
             }
         )
         socket.on(
             'itemLacked',
             function(data){
-                console.log(data);
+                //console.log(data);
                 items.splice(data,1);
             }
         )
@@ -391,9 +407,10 @@ function draw() {
                         runner.y+runner.h>data.y&&
                         runner.y<data.y+50
                     ){
-                        console.log("We have taken some damage");
+                        //console.log("We have taken some damage");
                         runner.health-=10;
                         runner.yvel=-10;
+                        damageRot=PI/90;
                     }
                     isAttacked=true;
                 }
@@ -406,7 +423,7 @@ function draw() {
             inventory
         )
     )
-    console.log(runner.yvel);
+    //console.log(runner.yvel);
     itemInUse.type=inventory[itemInUse.slot][0];
     itemInUse.count=inventory[itemInUse.slot][1];
 }
@@ -418,7 +435,7 @@ document.addEventListener(
     }
 );
 function mouseWheel(e){
-    console.log(e.delta);
+    //console.log(e.delta);
     if(e.delta<0) {
         itemInUse.slot--;
         if(itemInUse.slot<0){
