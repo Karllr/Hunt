@@ -369,7 +369,7 @@ function draw() {
                             data.type
                         )
                     )
-                    blocksReceived=false;
+                    blocksReceived=true;
                 }
             }
         )
