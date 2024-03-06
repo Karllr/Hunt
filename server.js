@@ -64,7 +64,7 @@ function makeBase(seed){
     }
     for(var i=0;i<blocks.length;i++){
          if(blocks[i].type==="grass"){
-             if(round(random(1,10))===1){
+             if(Math.round(Math.random()*9+1)===1){
                  Tree(blocks[i].x,blocks[i].y);
              }
          }
