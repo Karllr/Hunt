@@ -23,6 +23,17 @@ function Erase(set){
     set.length=0;
 }
 
+function Tree(x,y){
+    blocks.push(
+        new Block(x-50,y-150,"leaf"),
+        new Block(x+50,y-150,"leaf"),
+        new Block(x,y-200,"leaf"),
+        new Block(x,y-50,"wood"),
+        new Block(x,y-100,"wood"),
+        new Block(x,y-150,"wood"),
+    );
+}
+
 function makeBase(seed){
     var yVal=0;
     for(var i=-50;i<50;i++){
@@ -51,13 +62,13 @@ function makeBase(seed){
             }
         }
     }
-    // for(var i=0;i<blocks.length;i++){
-    //     if(blocks[i].type==="grass"){
-    //         if(round(random(1,10))===1){
-    //             Tree(blocks[i].x,blocks[i].y);
-    //         }
-    //     }
-    // }
+    for(var i=0;i<blocks.length;i++){
+         if(blocks[i].type==="grass"){
+             if(round(random(1,10))===1){
+                 Tree(blocks[i].x,blocks[i].y);
+             }
+         }
+    }
 }
 function addStone(){
     for(var i=0;i<blocks.length;i++){
