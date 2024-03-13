@@ -252,7 +252,7 @@ io.sockets.on(
                         type:data.type
                     }
                 )
-                checkOverlap();
+                //checkOverlap();
                 socket.broadcast.emit('newBlock',data);
             }
         )
