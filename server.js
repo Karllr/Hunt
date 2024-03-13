@@ -60,10 +60,10 @@ function makeBase(){
     let yVal=0;
     for(var i=0;i<worldMap[0].length;i++){
         if(yVal<2){
-            yVal+=round(random(0,2));
+            yVal+=Math.round(Math.random()*2);
         }
         else{
-            yVal+=round(random(-2,2))
+            yVal+=Math.round(Math.random()*4-2)
         }
         if(worldMap[yVal][i]!=="e"){
             worldMap[yVal][i]="grass"
@@ -104,13 +104,13 @@ function addOres(){
     for(var i=0;i<worldMap.length;i++){
         for(var j=0;j<worldMap[i].length;j++){
             if(worldMap[i][j]==="stone"){
-                if(round(random(1,16))===1){
+                if(Math.round(Math.random()*15+1)===1){
                     worldMap[i][j]="iron_ore"
                 }
-                if(round(random(1,16))===1){
+                if(Math.round(Math.random()*15+1)===1){
                     worldMap[i][j]="gold_ore"
                 }
-                if(round(random(1,32))===1){
+                if(Math.round(Math.random()*31+1)===1){
                     worldMap[i][j]="diamond_ore"
                 }
             }
@@ -120,7 +120,7 @@ function addOres(){
 function preThinkCaves(){
     for(var i=0;i<worldMap.length;i++){
         for(var j=0;j<worldMap[i].length;j++){
-            if(random()>random(0.45,0.55)){
+            if(Math.random()>Math.random()*0.1+0.45){
                 worldMap[i][j]="e";
             }
         }
@@ -172,10 +172,13 @@ function Load(){
         }
     }
 }
+InitMap();
+preThinkCaves();
+createCaves();
 makeBase();
 addStone();
 addOres();
-checkOverlap();
+Load();
 var lowestPoint=0;
 for(var i=0;i<blocks.length;i++){
     if(blocks[i].y>lowestPoint){
