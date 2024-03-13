@@ -73,7 +73,7 @@ function makeBase(){
     for(var i=0;i<worldMap.length;i++){
         for(var j=0;j<worldMap[i].length;j++){
             if(worldMap[i][j]==="grass"){
-                let amountOfDirtUnder=round(random(2,10));
+                let amountOfDirtUnder=Math.round(Math.random()*8+2);
                 for(var k=0;k<amountOfDirtUnder;k++){
                     if(worldMap[i+k+1][j]!=="e"){
                         worldMap[i+k+1][j]="dirt";
