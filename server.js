@@ -23,94 +23,151 @@ function Erase(set){
     set.length=0;
 }
 
-function Tree(x,y){
-    blocks.push(
-        new Block(x-50,y-150,"leaf"),
-        new Block(x+50,y-150,"leaf"),
-        new Block(x,y-200,"leaf"),
-        new Block(x,y-50,"wood"),
-        new Block(x,y-100,"wood"),
-        new Block(x,y-150,"wood"),
-    );
+//function Tree(x,y){
+//    blocks.push(
+//        new Block(x-50,y-150,"leaf"),
+//        new Block(x+50,y-150,"leaf"),
+//        new Block(x,y-200,"leaf"),
+//        new Block(x,y-50,"wood"),
+//        new Block(x,y-100,"wood"),
+//        new Block(x,y-150,"wood"),
+//    );
+//}
+
+var worldMap=[];
+var grassCoords=[];
+
+function InitMap(){
+    for(var i=-100;i<100;i++){
+        worldMap.push([])
+    }
+    for(var i=0;i<worldMap.length;i++){
+        for(var j=0;j<100;j++){
+            worldMap[i].push("")
+        }
+    }
+    
+}
+function createGrid(cols, rows) {
+    let grid = new Array(cols);
+    for (let i = 0; i < cols; i++) {
+        grid[i] = new Array(rows);
+    }
+    return grid;
 }
 
-function makeBase(seed){
-    var yVal=0;
-    for(var i=-50;i<50;i++){
-        yVal+=Math.round(Math.random()*4-2)*50
-        //console.log(yVal)
-        blocks.push(
-            new Block(
-                i*50,
-                yVal,
-                "grass"
-            )
-        );
+function makeBase(){
+    let yVal=0;
+    for(var i=0;i<worldMap[0].length;i++){
+        if(yVal<2){
+            yVal+=round(random(0,2));
+        }
+        else{
+            yVal+=round(random(-2,2))
+        }
+        if(worldMap[yVal][i]!=="e"){
+            worldMap[yVal][i]="grass"
+        }
+        grassCoords.push(yVal);
     }
-    for(var i=0;i<blocks.length;i++){
-        if(blocks[i].type==="grass"){
-            let amountOfDirtUnder=Math.round(Math.random()*8+2);
-            //console.log(amountOfDirtUnder);
-            for(var j=0;j<amountOfDirtUnder;j++){
-                blocks.push(
-                    new Block(
-                        blocks[i].x,
-                        blocks[i].y+(j+1)*50,
-                        "dirt"
-                    )
-                )
+    for(var i=0;i<worldMap.length;i++){
+        for(var j=0;j<worldMap[i].length;j++){
+            if(worldMap[i][j]==="grass"){
+                let amountOfDirtUnder=round(random(2,10));
+                for(var k=0;k<amountOfDirtUnder;k++){
+                    if(worldMap[i+k+1][j]!=="e"){
+                        worldMap[i+k+1][j]="dirt";
+                    }
+                }
             }
         }
     }
-    for(var i=0;i<blocks.length;i++){
-         if(blocks[i].type==="grass"){
-             if(Math.round(Math.random()*9+1)===1){
-                 Tree(blocks[i].x,blocks[i].y);
-             }
-         }
-    }
 }
+
 function addStone(){
-    for(var i=0;i<blocks.length;i++){
-        if(blocks[i].type==="dirt"&&!blocks[i].blockBelow){
-            let amountOtStoneUnder=Math.round(Math.random()*10+40);
-            for(var j=0;j<amountOtStoneUnder;j++){
-                blocks.push(
-                    new Block(
-                        blocks[i].x,
-                        blocks[i].y+(j+1)*50,
-                        "stone"
-                    )
-                );
+    for(var i=0;i<worldMap.length;i++){
+        for(var j=0;j<worldMap[i].length;j++){
+            for(var k=0;k<worldMap.length-i-1;k++){
+                if(worldMap[i+k+1][j]!=="e"&&
+                worldMap[i+k+1][j]!=="grass"&&
+                worldMap[i+k+1][j]!=="dirt"&&
+                i+k+1>grassCoords[j]
+                ){
+                    worldMap[i+k+1][j]="stone"
+                }
             }
         }
     }
 }
+
 function addOres(){
-    for(var i=0;i<blocks.length;i++){
-        if(blocks[i].type==="stone"){
-            if(Math.round(Math.random()*15+1)===1){
-                blocks[i].type="iron_ore"
-            }
-            if(Math.round(Math.random()*31+1)===1&&blocks[i].y>40*50){
-                blocks[i].type="gold_ore"
-            }
-            if(Math.round(Math.random()*31+1)===1&&blocks[i].y>40*50){
-                blocks[i].type="diamond_ore";
+    for(var i=0;i<worldMap.length;i++){
+        for(var j=0;j<worldMap[i].length;j++){
+            if(worldMap[i][j]==="stone"){
+                if(round(random(1,16))===1){
+                    worldMap[i][j]="iron_ore"
+                }
+                if(round(random(1,16))===1){
+                    worldMap[i][j]="gold_ore"
+                }
+                if(round(random(1,32))===1){
+                    worldMap[i][j]="diamond_ore"
+                }
             }
         }
     }
 }
-function checkOverlap(){
-    for(var i=0;i<blocks.length;i++){
-        for(var j=0;j<blocks.length;j++){
-            if(i!==j&&blocks[i].x===blocks[j].x&&blocks[i].y===blocks[j].y){
-                if(j>i){
-                    blocks.splice(j,1);
+function preThinkCaves(){
+    for(var i=0;i<worldMap.length;i++){
+        for(var j=0;j<worldMap[i].length;j++){
+            if(random()>random(0.45,0.55)){
+                worldMap[i][j]="e";
+            }
+        }
+    }
+}
+
+function countEmptNeighbors(grid,x,y){
+    let sum = 0;
+    for (let i = -1; i < 2; i++) {
+        for (let j = -1; j < 2; j++) {
+            let col = (x + i + worldMap[0].length) % worldMap[0].length;
+            let row = (y + j + worldMap.length) % worldMap.length;
+            if(grid[row][col]!==""){
+                sum++;
+            }
+        }
+    }
+    if(grid[y][x]!=="e"){
+        sum--;
+    }
+    return sum;
+}
+
+function createCaves(){
+    for (let i = 0; i < 3; i++) { // Repeat for 5 iterations
+        let next = createGrid(worldMap[0].length, worldMap.length);
+        for (let x = 0; x < worldMap[0].length; x++) {
+            for (let y = 0; y < worldMap.length; y++) {
+                let neighbors = countEmptNeighbors(worldMap, x, y);
+                if (neighbors < 4) {
+                    next[x][y] = "e"; // Set block to empty if it has fewer than 4 empty neighbors
+                } else if (neighbors > 4) {
+                    next[x][y] = ""; // Set block to solid if it has more than 4 empty neighbors
+                } else {
+                    next[x][y] = worldMap[y][x]; // Preserve the current state
                 }
-                if(i>j){
-                    blocks.splice(i,1);
-                }
+            }
+        }
+        worldMap = next;
+    }
+}
+
+function Load(){
+    for(var i=0;i<worldMap.length;i++){
+        for(var j=0;j<worldMap[i].length;j++){
+            if(worldMap[i][j]!=='e'&&worldMap[i][j]!==''){
+                blocks.push(new Block(j*50,i*50,worldMap[i][j]))
             }
         }
     }
