@@ -1,6 +1,7 @@
 var express=require('express');
 var players=[];
 var items=[];
+var biomes=[];
 function Player(id,x,y,name){
     this.id=id;
     this.x=x;
@@ -37,17 +38,22 @@ function Erase(set){
 var worldMap=[];
 var grassCoords=[];
 
-function InitMap(){
-    for(var i=-100;i<100;i++){
-        worldMap.push([])
+var worldMap=[];
+var grassCoords=[];
+//Intializes the grid
+function InitMap(grid){
+    for(var i=0;i<400;i++){
+        grid.push([])
     }
     for(var i=0;i<worldMap.length;i++){
         for(var j=0;j<100;j++){
-            worldMap[i].push("")
+            grid[i].push("")
         }
     }
     
 }
+InitMap(worldMap)
+//Genuinely creates the grid
 function createGrid(cols, rows) {
     let grid = new Array(cols);
     for (let i = 0; i < cols; i++) {
@@ -55,9 +61,42 @@ function createGrid(cols, rows) {
     }
     return grid;
 }
-
+//creates Sections of Biomes
+function sectionateBiomes(){
+    //Mark at 0, the start of the map
+    let widthCovered=0,
+    //Consider the biomes we have now
+    biomeTypes=["plains","desert"]
+    //If we haven't covered all the width
+    while(widthCovered<worldMap.length){
+        //Make a random section of biome, should be 50 to 250 blocks wide
+        let sectionWidth=Math.round(Math.random()*200+50);
+        //Keep this for later, the biome will alter world generation
+        //We will keep the type, the start value, and the ending value like so:
+        biomes.push(
+            {
+                type:biomeTypes[Math.round(Math.random()*(biomeTypes.length-1))],
+                start:widthCovered,
+                end:widthCovered+sectionWidth
+            }
+        )
+        console.log(worldMap.length)
+        //Also we have to increment my nigga to continue
+        widthCovered+=sectionWidth+1;
+        //The reason we put a plus one is because 
+    }
+}
+sectionateBiomes();
 function makeBase(){
+    let biomeIn=[];
     let yVal=0;
+    for(var i=0;i<worldMap[0].length;i++){
+        for(var j=0;j<biomes.length;j++){
+            if(i>=biomes[j].start&&i<=biomes[j].end){
+                biomeIn.push(biomes[j].type);
+            }
+        }
+    }
     for(var i=0;i<worldMap[0].length;i++){
         if(yVal<2){
             yVal+=Math.round(Math.random()*2);
@@ -65,23 +104,59 @@ function makeBase(){
         else{
             yVal+=Math.round(Math.random()*4-2)
         }
-        if(worldMap[yVal][i]!=="e"){
-            worldMap[yVal][i]="grass"
+        switch(biomeIn[i]){
+            case "plains":
+                if(worldMap[yVal][i]!=="e"){
+                    worldMap[yVal][i]="grass"
+                }
+            break;
+            case "desert":
+                if(Math.round(Math.random()*10)!==0){
+                    worldMap[yVal][i]="sand"
+                }
+            break;
         }
         grassCoords.push(yVal);
     }
     for(var i=0;i<worldMap.length;i++){
         for(var j=0;j<worldMap[i].length;j++){
-            if(worldMap[i][j]==="grass"){
-                let amountOfDirtUnder=Math.round(Math.random()*8+2);
+            switch(biomeIn[j]){
+                case 'plains':
+                    if(worldMap[i][j]==="grass"){
+                        let amountOfDirtUnder=Math.round(Math.random()*8+2);
+                        for(var k=0;k<amountOfDirtUnder;k++){
+                            if(worldMap[i+k+1][j]!=="e"){
+                                worldMap[i+k+1][j]="dirt";
+                            }
+                        }
+                    }
+                break;
+                case 'desert':
+                    if(worldMap[i][j]==="sand"){
+                        let amountOfDirtUnder=Math.round(Math.random()*2+2);
+                        for(var k=0;k<amountOfDirtUnder;k++){
+                            if(worldMap[i+k+1][j]!=="e"&&Math.round(Math.random()*10)!==0){
+                                worldMap[i+k+1][j]="sand";
+                            }
+                        }
+                    }
+                break;
+            }
+        }
+    }
+    for(var i=0;i<worldMap.length;i++){
+        for(var j=0;j<worldMap[i].length;j++){
+            if(worldMap[i][j]==="sand"&&worldMap[i+1][j]!=="sand"){
+                let amountOfDirtUnder=Math.round(Math.random()*4+2);
                 for(var k=0;k<amountOfDirtUnder;k++){
-                    if(worldMap[i+k+1][j]!=="e"){
-                        worldMap[i+k+1][j]="dirt";
+                    if(worldMap[i+k+1][j]!=="e"&&Math.round(Math.random()*3)!==0){
+                        worldMap[i+k+1][j]="sandstone";
                     }
                 }
             }
         }
     }
+    console.log(biomeIn)
 }
 
 function addStone(){
@@ -91,6 +166,8 @@ function addStone(){
                 if(worldMap[i+k+1][j]!=="e"&&
                 worldMap[i+k+1][j]!=="grass"&&
                 worldMap[i+k+1][j]!=="dirt"&&
+                worldMap[i+k+1][j]!=="sand"&&
+                worldMap[i+k+1][j]!=="sandstone"&&
                 i+k+1>grassCoords[j]
                 ){
                     worldMap[i+k+1][j]="stone"
@@ -172,7 +249,7 @@ function Load(){
         }
     }
 }
-InitMap();
+InitMap(worldMap);
 preThinkCaves();
 createCaves();
 makeBase();
@@ -186,7 +263,7 @@ for(var i=0;i<blocks.length;i++){
     }
 }
 var app=express();
-var server=app.listen(process.env.PORT,'0.0.0.0');
+var server=app.listen(3000);
 app.use(express.static('public'))
 console.log("This server happens to be running");
 console.log(blocks)
@@ -206,6 +283,7 @@ io.sockets.on(
         socket.emit('blocks',
             {
                 blocks:blocks,
+                map:worldMap,
                 lp:lowestPoint
             }
         );
