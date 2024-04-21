@@ -95,6 +95,7 @@ function setup() {
                     )
                 )
             }
+            worldMap=data.map;
             lowestPoint=data.lp;
         }
     )
@@ -175,8 +176,8 @@ function draw() {
                 //console.log(blocksInRender);
             }
         }
-        for (var i = -100; i < 100; i++) {
-            for (var j = -100; j < 100; j++) {
+        for (var i = 0; i < worldMap[0].length; i++) {
+            for (var j = -100; j < worldMap.length; j++) {
                 if (mouseX > i * 50 + cam.x && mouseX < (i + 1) * 50 + cam.x && mouseY > j * 50 + cam.y && mouseY < (j + 1) * 50 + cam.y) {
                     selectedSlot.x = i;
                     selectedSlot.y = j;
