@@ -176,15 +176,15 @@ function draw() {
                 //console.log(blocksInRender);
             }
         }
-        for (var i = 0; i < worldMap[0].length; i++) {
-            for (var j = -100; j < worldMap.length; j++) {
+        for (var i = 0; i < 400; i++) {
+            for (var j = -100; j < 100; j++) {
                 if (mouseX > i * 50 + cam.x && mouseX < (i + 1) * 50 + cam.x && mouseY > j * 50 + cam.y && mouseY < (j + 1) * 50 + cam.y) {
                     selectedSlot.x = i;
                     selectedSlot.y = j;
                     noFill();
                     stroke(0);
                     strokeWeight(2);
-                    rect(i * 50, (j) * 50, 50, 50);
+                    rect(i * 50, j * 50, 50, 50);
                     //console.log(selectedSlot.x,selectedSlot.y);
                 }
             }
