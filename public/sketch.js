@@ -1,4 +1,4 @@
-var keys = [], blocks = [], blockData=[], items=[], players=[], blocksInRender=[];
+var keys = [], blocks = [], blockData=[], items=[], players=[], blocksInRender=[], worldMap=[];
 var runner, socket, name, lowestPoint;
 var HoldFactor=1,
 timeToPlace=0,
