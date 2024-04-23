@@ -41,6 +41,58 @@ function Block(x,y,type){
                     rect(this.x+this.Sz/8*5,this.y+this.Sz/8*5,this.Sz/8,this.Sz/8);
                     rect(this.x+this.Sz/4,this.y+this.Sz/4*3,this.Sz/8,this.Sz/8);
             break;
+            case "savanna_grass":
+                this.break.timeToDo=60;
+                // noFill();
+                // stroke(0);
+                // strokeWeight(2);
+                // rect(this.x,this.y,this.Sz,this.Sz);
+                fill('#9fc92c');
+                    rect(this.x,this.y,this.Sz,this.Sz/8*3)
+                fill('#a0bf4b');
+                    rect(this.x+this.Sz/8,this.y+this.Sz/8,this.Sz/8*6,this.Sz/8)
+                    rect(this.x+this.Sz/4,this.y+this.Sz/4,this.Sz/8,this.Sz/8);
+                    rect(this.x+this.Sz/2,this.y+this.Sz/4,this.Sz/4,this.Sz/8);
+                fill('#805B3E');
+                    rect(this.x, this.y+this.Sz/8*3, this.Sz,this.Sz/8*5);
+                fill('#8C6344');
+                    rect(this.x+this.Sz/8,this.y+this.Sz/2,this.Sz/4*3,this.Sz/8*3)
+                fill('#805B3E');
+                    rect(this.x+this.Sz/4, this.y+this.Sz/2,this.Sz/8, this.Sz/8)
+                    rect(this.x+this.Sz/2, this.y+this.Sz/2,this.Sz/4, this.Sz/8)
+                fill('#9fc92c');
+                    rect(this.x+this.Sz/4, this.y+this.Sz/8*3,this.Sz/8, this.Sz/8)
+                    rect(this.x+this.Sz/2, this.y+this.Sz/8*3,this.Sz/4, this.Sz/8)
+                fill('#846C5A');
+                    rect(this.x+this.Sz/8*5,this.y+this.Sz/8*5,this.Sz/8,this.Sz/8);
+                    rect(this.x+this.Sz/4,this.y+this.Sz/4*3,this.Sz/8,this.Sz/8);
+            break;
+            case "snow_grass":
+                this.break.timeToDo=60;
+                // noFill();
+                // stroke(0);
+                // strokeWeight(2);
+                // rect(this.x,this.y,this.Sz,this.Sz);
+                fill('#F1FFFF');
+                    rect(this.x,this.y,this.Sz,this.Sz/8*3)
+                fill('#FFFFFF');
+                    rect(this.x+this.Sz/8,this.y+this.Sz/8,this.Sz/8*6,this.Sz/8)
+                    rect(this.x+this.Sz/4,this.y+this.Sz/4,this.Sz/8,this.Sz/8);
+                    rect(this.x+this.Sz/2,this.y+this.Sz/4,this.Sz/4,this.Sz/8);
+                fill('#805B3E');
+                    rect(this.x, this.y+this.Sz/8*3, this.Sz,this.Sz/8*5);
+                fill('#8C6344');
+                    rect(this.x+this.Sz/8,this.y+this.Sz/2,this.Sz/4*3,this.Sz/8*3)
+                fill('#805B3E');
+                    rect(this.x+this.Sz/4, this.y+this.Sz/2,this.Sz/8, this.Sz/8)
+                    rect(this.x+this.Sz/2, this.y+this.Sz/2,this.Sz/4, this.Sz/8)
+                fill('#F1FFFF');
+                    rect(this.x+this.Sz/4, this.y+this.Sz/8*3,this.Sz/8, this.Sz/8)
+                    rect(this.x+this.Sz/2, this.y+this.Sz/8*3,this.Sz/4, this.Sz/8)
+                fill('#846C5A');
+                    rect(this.x+this.Sz/8*5,this.y+this.Sz/8*5,this.Sz/8,this.Sz/8);
+                    rect(this.x+this.Sz/4,this.y+this.Sz/4*3,this.Sz/8,this.Sz/8);
+            break;
             case "dirt":
                 this.break.timeToDo=60;
                 fill("#805B3E");
@@ -157,7 +209,7 @@ function Block(x,y,type){
                     rect(this.x+this.Sz/8,this.y+this.Sz/8*5,this.Sz/8,this.Sz/8);
                     rect(this.x+this.Sz/8*6,this.y+this.Sz/8*5,this.Sz/8,this.Sz/8);
             break;
-            case "wood":
+            case "oak_wood":
                 this.break.timeToDo=60*2;
                 fill("#534228");
                     rect(this.x,this.y,this.Sz,this.Sz);
@@ -170,7 +222,28 @@ function Block(x,y,type){
                     rect(this.x+this.Sz/8*5,this.y+this.Sz/8*3,this.Sz/8,this.Sz/4)
                     rect(this.x+this.Sz/8*5,this.y+this.Sz/8*6,this.Sz/8,this.Sz/4)
             break;
-            case "leaf":
+            case "oak_leaf":
+                this.break.timeToDo=60*0.25;
+                fill("#317F10");
+                rect(this.x,this.y,this.Sz,this.Sz/8);
+                rect(this.x,this.y,this.Sz/8,this.Sz);
+                rect(this.x+this.Sz/8*7,this.y,this.Sz/8,this.Sz);
+                rect(this.x,this.y+this.Sz/8*7,this.Sz,this.Sz/8);
+            break;
+            case "acacia_wood":
+                this.break.timeToDo=60*2;
+                fill("#5C564D");
+                    rect(this.x,this.y,this.Sz,this.Sz);
+                fill("#6A6359");
+                    rect(this.x+this.Sz/8,this.y,this.Sz/4*3,this.Sz);
+                fill("#5C564D");
+                    rect(this.x+this.Sz/4,this.y+this.Sz/8,this.Sz/8,this.Sz/4)
+                    rect(this.x+this.Sz/4,this.y+this.Sz/8*5,this.Sz/8,this.Sz/4)
+                    rect(this.x+this.Sz/8*5,this.y,this.Sz/8,this.Sz/4)
+                    rect(this.x+this.Sz/8*5,this.y+this.Sz/8*3,this.Sz/8,this.Sz/4)
+                    rect(this.x+this.Sz/8*5,this.y+this.Sz/8*6,this.Sz/8,this.Sz/4)
+            break;
+            case "acacia_leaf":
                 this.break.timeToDo=60*0.25;
                 fill("#317F10");
                 rect(this.x,this.y,this.Sz,this.Sz/8);
