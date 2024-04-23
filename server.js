@@ -42,7 +42,7 @@ var worldMap=[];
 var grassCoords=[];
 //Intializes the grid
 function InitMap(grid){
-    for(var i=0;i<400;i++){
+    for(var i=0;i<800;i++){
         grid.push([])
     }
     for(var i=0;i<worldMap.length;i++){
@@ -66,7 +66,7 @@ function sectionateBiomes(){
     //Mark at 0, the start of the map
     let widthCovered=0,
     //Consider the biomes we have now
-    biomeTypes=["plains","desert"]
+    biomeTypes=["plains","desert", "snow_plains", "savanna"]
     //If we haven't covered all the width
     while(widthCovered<worldMap.length){
         //Make a random section of biome, should be 50 to 250 blocks wide
@@ -106,14 +106,22 @@ function makeBase(){
         }
         switch(biomeIn[i]){
             case "plains":
-                if(worldMap[yVal][i]!=="e"){
+                if(worldMap[yVal][i]!=="e"&&Math.round(Math.random()*30)!==0){
                     worldMap[yVal][i]="grass"
                 }
             break;
+            case "savanna":
+                if(worldMap[yVal][i]!=="e"&&Math.round(Math.random()*30)!==0){
+                    worldMap[yVal][i]="savanna_grass"
+                }
+            break;
             case "desert":
-                if(Math.round(Math.random()*10)!==0){
+                if(Math.round(Math.random()*30)!==0){
                     worldMap[yVal][i]="sand"
                 }
+            break;
+            case "snow_plains":
+                worldMap[yVal][i]="snow_grass";
             break;
         }
         grassCoords.push(yVal);
@@ -131,12 +139,32 @@ function makeBase(){
                         }
                     }
                 break;
+                case 'savanna':
+                    if(worldMap[i][j]==="savanna_grass"){
+                        let amountOfDirtUnder=Math.round(Math.random()*8+2);
+                        for(var k=0;k<amountOfDirtUnder;k++){
+                            if(worldMap[i+k+1][j]!=="e"){
+                                worldMap[i+k+1][j]="dirt";
+                            }
+                        }
+                    }
+                break;
                 case 'desert':
                     if(worldMap[i][j]==="sand"){
                         let amountOfDirtUnder=Math.round(Math.random()*2+2);
                         for(var k=0;k<amountOfDirtUnder;k++){
                             if(worldMap[i+k+1][j]!=="e"&&Math.round(Math.random()*10)!==0){
                                 worldMap[i+k+1][j]="sand";
+                            }
+                        }
+                    }
+                break;
+                case "snow_plains":
+                    if(worldMap[i][j]==="snow_grass"){
+                        let amountOfDirtUnder=Math.round(Math.random()*8+2)
+                        for(var k=0;k<amountOfDirtUnder;k++){
+                            if(worldMap[i+k+1][j]!=="e"){
+                                worldMap[i+k+1][j]="dirt";
                             }
                         }
                     }
@@ -203,7 +231,30 @@ function preThinkCaves(){
         }
     }
 }
-
+function addTrees(){
+    for(var i=0;i<worldMap.length;i++){
+        for(var j=0;j<worldMap[i].length;j++){
+            if(i>=4){
+                if(worldMap[i][j]==="grass"&&Math.round(Math.random()*4)===0){
+                    worldMap[i-1][j]="oak_wood";
+                    worldMap[i-2][j]="oak_wood";
+                    worldMap[i-3][j]="oak_wood";
+                    worldMap[i-3][j-1]="oak_leaf";
+                    worldMap[i-4][j]="oak_leaf";
+                    worldMap[i-3][j+1]="oak_leaf";
+                }
+                if(worldMap[i][j]==="savanna_grass"&&Math.round(Math.random()*4)===0){
+                    worldMap[i-1][j]="acacia_wood";
+                    worldMap[i-2][j]="acacia_wood";
+                    worldMap[i-3][j]="acacia_wood";
+                    worldMap[i-3][j-1]="acacia_leaf";
+                    worldMap[i-4][j]="acacia_leaf";
+                    worldMap[i-3][j+1]="acacia_leaf";
+                }
+            }
+        }
+    }
+}
 function countEmptNeighbors(grid,x,y){
     let sum = 0;
     for (let i = -1; i < 2; i++) {
@@ -255,6 +306,7 @@ createCaves();
 makeBase();
 addStone();
 addOres();
+addTrees();
 Load();
 var lowestPoint=0;
 for(var i=0;i<blocks.length;i++){
@@ -267,6 +319,7 @@ var server=app.listen(3000);
 app.use(express.static('public'))
 console.log("This server happens to be running");
 console.log(blocks)
+console.log(biomes)
 
 var socket=require('socket.io')
 
