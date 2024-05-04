@@ -1,11 +1,12 @@
-var keys = [], blocks = [], blockData=[], items=[], players=[], blocksInRender=[], worldMap=[];
+var keys = [], blocks = [], blockData=[], items=[], players=[], blocksInRender=[],phantomBlocks=[],clouds=[];
 var runner, socket, name, lowestPoint;
 var HoldFactor=1,
 timeToPlace=0,
 deathTimer = 0,
 antiHealth=0,
 hunger=100,
-damageRot=0;
+damageRot=0,
+time=[0,1];
 var lackOfBlock=true,
 isAttacked=false,
 itemReceived=false,
@@ -82,6 +83,16 @@ function setup() {
     //addStone();
     //addOres();
     //checkOverlap();
+    for(var i=0;i<50;i++){
+        clouds.push(
+            {
+                x:Math.random()*400*50,
+                y:-50*50,
+                w:Math.random()*500+300,
+                zLayer:Math.round(Math.random()*10)
+            }
+        )
+    }
     socket.on(
         'blocks',
         function(data){
@@ -282,6 +293,47 @@ function draw() {
                     textAlign(CENTER);
                     text(players[i].name, players[i].x, players[i].y - 30);
                 }
+            }
+        }
+        for (var i = 0; i < clouds.length; i++) {
+            noStroke();
+            fill(255, 255, 255, 50);
+            rect(clouds[i].x,
+                clouds[i].y-clouds[i].zLayer*75,
+                clouds[i].w*clouds[i].zLayer/5,
+                50*clouds[i].zLayer/5);
+            rect(clouds[i].x-(runner.x-clouds[i].x)*0.2+clouds[i].w*0.25,
+                clouds[i].y-clouds[i].zLayer*75-(clouds[i].y-runner.y)*0.2+50*0.25,
+                (clouds[i].w*clouds[i].zLayer/5)*0.5,25*clouds[i].zLayer/5);
+            //Leftmost cloud piece
+            quad(clouds[i].x,clouds[i].y-clouds[i].zLayer*75,
+                clouds[i].x-(runner.x-clouds[i].x)*0.2+clouds[i].w*0.25, clouds[i].y-clouds[i].zLayer*75-(clouds[i].y-runner.y)*0.2+50*0.25,
+                clouds[i].x-(runner.x-clouds[i].x)*0.2+clouds[i].w*0.25, clouds[i].y-clouds[i].zLayer*75-(clouds[i].y-runner.y)*0.2+50*0.25+25*clouds[i].zLayer/5,
+                clouds[i].x,clouds[i].y-clouds[i].zLayer*75+50*clouds[i].zLayer/5);
+            //Topmost
+            quad(
+                clouds[i].x, clouds[i].y-clouds[i].zLayer*75,
+                clouds[i].x-(runner.x-clouds[i].x)*0.2+clouds[i].w*0.25, clouds[i].y-clouds[i].zLayer*75-(clouds[i].y-runner.y)*0.2+50*0.25,
+                clouds[i].x-(runner.x-clouds[i].x)*0.2+clouds[i].w*0.25+(clouds[i].w*clouds[i].zLayer/5)*0.5, clouds[i].y-clouds[i].zLayer*75-(clouds[i].y-runner.y)*0.2+50*0.25,
+                clouds[i].x+clouds[i].w*clouds[i].zLayer/5,clouds[i].y-clouds[i].zLayer*75
+            );
+            //Leftmost
+            quad(
+                clouds[i].x+clouds[i].w*clouds[i].zLayer/5,clouds[i].y-clouds[i].zLayer*75,
+                clouds[i].x-(runner.x-clouds[i].x)*0.2+clouds[i].w*0.25+(clouds[i].w*clouds[i].zLayer/5)*0.5, clouds[i].y-clouds[i].zLayer*75-(clouds[i].y-runner.y)*0.2+50*0.25,
+                clouds[i].x-(runner.x-clouds[i].x)*0.2+clouds[i].w*0.25+(clouds[i].w*clouds[i].zLayer/5)*0.5, clouds[i].y-clouds[i].zLayer*75-(clouds[i].y-runner.y)*0.2+50*0.25+25*clouds[i].zLayer/5,
+                clouds[i].x+clouds[i].w*clouds[i].zLayer/5,clouds[i].y-clouds[i].zLayer*75+50*clouds[i].zLayer/5
+            );
+            //Bottommost
+            quad(
+                clouds[i].x, clouds[i].y-clouds[i].zLayer*75+50*clouds[i].zLayer/5,
+                clouds[i].x-(runner.x-clouds[i].x)*0.2+clouds[i].w*0.25, clouds[i].y-clouds[i].zLayer*75-(clouds[i].y-runner.y)*0.2+50*0.25+25*clouds[i].zLayer/5,
+                clouds[i].x-(runner.x-clouds[i].x)*0.2+clouds[i].w*0.25+(clouds[i].w*clouds[i].zLayer/5)*0.5, clouds[i].y-clouds[i].zLayer*75-(clouds[i].y-runner.y)*0.2+50*0.25+25*clouds[i].zLayer/5,
+                clouds[i].x+clouds[i].w*clouds[i].zLayer/5,clouds[i].y-clouds[i].zLayer*75+50*clouds[i].zLayer/5
+            );
+            clouds[i].x += (10-clouds[i].zLayer) / 10 * 5;
+            if (clouds[i].x > 400 * 50) {
+                clouds[i].x = 0;
             }
         }
     }
