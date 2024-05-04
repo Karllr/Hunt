@@ -2,6 +2,7 @@ var express=require('express');
 var players=[];
 var items=[];
 var biomes=[];
+var time=[0,1];
 function Player(id,x,y,name){
     this.id=id;
     this.x=x;
@@ -37,9 +38,7 @@ function Erase(set){
 
 var worldMap=[];
 var grassCoords=[];
-
-var worldMap=[];
-var grassCoords=[];
+var sandCoords=[];
 //Intializes the grid
 function InitMap(grid){
     for(var i=0;i<800;i++){
@@ -106,62 +105,38 @@ function makeBase(){
         }
         switch(biomeIn[i]){
             case "plains":
-                if(worldMap[yVal][i]!=="e"&&Math.round(Math.random()*30)!==0){
+                if(worldMap[yVal][i]!=="e"){
                     worldMap[yVal][i]="grass"
                 }
             break;
             case "savanna":
-                if(worldMap[yVal][i]!=="e"&&Math.round(Math.random()*30)!==0){
+                if(worldMap[yVal][i]!=="e"){
                     worldMap[yVal][i]="savanna_grass"
                 }
             break;
             case "desert":
-                if(Math.round(Math.random()*30)!==0){
+                if(worldMap[yVal][i]!=="e"){
                     worldMap[yVal][i]="sand"
                 }
+                sandCoords.push([i,yVal])
             break;
             case "snow_plains":
-                worldMap[yVal][i]="snow_grass";
+                if(worldMap[yVal][i]!=="e"){
+                    worldMap[yVal][i]="snow_grass";
+                }
             break;
         }
         grassCoords.push(yVal);
     }
+    console.log(biomeIn)
     for(var i=0;i<worldMap.length;i++){
         for(var j=0;j<worldMap[i].length;j++){
             switch(biomeIn[j]){
                 case 'plains':
-                    if(worldMap[i][j]==="grass"){
-                        let amountOfDirtUnder=Math.round(Math.random()*8+2);
-                        for(var k=0;k<amountOfDirtUnder;k++){
-                            if(worldMap[i+k+1][j]!=="e"){
-                                worldMap[i+k+1][j]="dirt";
-                            }
-                        }
-                    }
-                break;
                 case 'savanna':
-                    if(worldMap[i][j]==="savanna_grass"){
+                case 'snow_plains':
+                    if(worldMap[i][j]==="grass"||worldMap[i][j]==="snow_grass"||worldMap[i][j]==="savanna_grass"){
                         let amountOfDirtUnder=Math.round(Math.random()*8+2);
-                        for(var k=0;k<amountOfDirtUnder;k++){
-                            if(worldMap[i+k+1][j]!=="e"){
-                                worldMap[i+k+1][j]="dirt";
-                            }
-                        }
-                    }
-                break;
-                case 'desert':
-                    if(worldMap[i][j]==="sand"){
-                        let amountOfDirtUnder=Math.round(Math.random()*2+2);
-                        for(var k=0;k<amountOfDirtUnder;k++){
-                            if(worldMap[i+k+1][j]!=="e"&&Math.round(Math.random()*10)!==0){
-                                worldMap[i+k+1][j]="sand";
-                            }
-                        }
-                    }
-                break;
-                case "snow_plains":
-                    if(worldMap[i][j]==="snow_grass"){
-                        let amountOfDirtUnder=Math.round(Math.random()*8+2)
                         for(var k=0;k<amountOfDirtUnder;k++){
                             if(worldMap[i+k+1][j]!=="e"){
                                 worldMap[i+k+1][j]="dirt";
@@ -172,12 +147,20 @@ function makeBase(){
             }
         }
     }
+    for(var i=0;i<sandCoords.length;i++){
+        let amountOfSandUnder=Math.round(Math.random()*2+2);
+        for(j=0;j<amountOfSandUnder;j++){
+            if(worldMap[sandCoords[i][1]][sandCoords[i][0]]!=="e"){
+                worldMap[sandCoords[i][1]+j+1][sandCoords[i][0]]="sand"
+            }
+        }
+    }
     for(var i=0;i<worldMap.length;i++){
         for(var j=0;j<worldMap[i].length;j++){
             if(worldMap[i][j]==="sand"&&worldMap[i+1][j]!=="sand"){
                 let amountOfDirtUnder=Math.round(Math.random()*4+2);
                 for(var k=0;k<amountOfDirtUnder;k++){
-                    if(worldMap[i+k+1][j]!=="e"&&Math.round(Math.random()*3)!==0){
+                    if(worldMap[i+k+1][j]!=="e"){
                         worldMap[i+k+1][j]="sandstone";
                     }
                 }
@@ -300,7 +283,7 @@ function Load(){
         }
     }
 }
-InitMap(worldMap);
+//InitMap(worldMap);
 preThinkCaves();
 createCaves();
 makeBase();
@@ -316,7 +299,7 @@ for(var i=0;i<blocks.length;i++){
 }
 var app=express();
 var server=app.listen(3000);
-app.use(express.static('public'))
+app.use(express.static('ver 1.2.3'))
 console.log("This server happens to be running");
 console.log(blocks)
 console.log(biomes)
@@ -329,6 +312,11 @@ setInterval(heartbeat, 4);
 
 function heartbeat(){
     io.sockets.emit('heartbeat', players);
+    time[0]+=time[1];
+    if(time[0]>12000||time[0]<0){
+        time[1]*=-1;
+    }
+    io.sockets.emit('time',time[0])
 }
 io.sockets.on(
     'connection',
